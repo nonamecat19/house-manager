@@ -1,19 +1,19 @@
 package main
 
 import (
-	"context"
-	"fmt"
+	"github.com/gofiber/fiber/v2"
 	_ "github.com/lib/pq"
-	"main/db"
+	api "main/api/items"
 )
 
 func main() {
-	fmt.Println("Hello World")
-	queries := db.GetQueries()
-	ctx := context.Background()
-	items, err := queries.ListItems(ctx)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("ListItems:", items)
+	app := fiber.New()
+
+	items := app.Group("/items")
+
+	items.Get("/", api.GetAllItemsHandler)
+	items.Post("/", api.AddOneItemHandler)
+	items.Delete("/:id<guid>", api.DeleteOneItemHandler)
+
+	_ = app.Listen(":10001")
 }

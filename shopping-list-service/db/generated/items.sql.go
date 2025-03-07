@@ -14,13 +14,13 @@ import (
 const addItem = `-- name: AddItem :one
 INSERT INTO items (name)
 VALUES ($1)
-RETURNING id, name, timestamp
+RETURNING id, name, created_at
 `
 
 func (q *Queries) AddItem(ctx context.Context, name string) (Item, error) {
 	row := q.db.QueryRowContext(ctx, addItem, name)
 	var i Item
-	err := row.Scan(&i.ID, &i.Name, &i.Timestamp)
+	err := row.Scan(&i.ID, &i.Name, &i.CreatedAt)
 	return i, err
 }
 
@@ -35,7 +35,7 @@ func (q *Queries) DeleteItem(ctx context.Context, id uuid.UUID) error {
 }
 
 const listItems = `-- name: ListItems :many
-SELECT id, name, timestamp
+SELECT id, name, created_at
 FROM items
 `
 
@@ -48,7 +48,7 @@ func (q *Queries) ListItems(ctx context.Context) ([]Item, error) {
 	var items []Item
 	for rows.Next() {
 		var i Item
-		if err := rows.Scan(&i.ID, &i.Name, &i.Timestamp); err != nil {
+		if err := rows.Scan(&i.ID, &i.Name, &i.CreatedAt); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

@@ -13,5 +13,5 @@ import (
 type Item struct {
 	ID        uuid.UUID
 	Name      string
-	Timestamp sql.NullTime
+	CreatedAt sql.NullTime
 }
